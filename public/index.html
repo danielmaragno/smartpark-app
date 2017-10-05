@@ -11,7 +11,7 @@
     <!-- PÁGINA -->
     <div 
       id = "map" 
-      style = "width: 600; height: 450;">
+      style = "width: 100%; height: 100%;">
     </div>
 
 
@@ -113,16 +113,45 @@
 
 
       // TEST FUNCTIONS
-      function sendSenseNotEmpty(){
+      function sendSenseNotEmpty(geoLocation){
         sense.create({
-          '_id': generateMapMarkerId({'lat': -27.599645, 'lon': -48.518818 }),
-          'geoLocation': {'lat': -27.599645, 'lon': -48.518818 }
+          '_id': generateMapMarkerId(geoLocation),
+          'geoLocation': geoLocation
         });
       }
 
-      function sendSenseEmpty(){
-        sense.remove(generateMapMarkerId({'lat': -27.599645, 'lon': -48.518818 }));
+      function sendSenseEmpty(geoLocation){
+        sense.remove(generateMapMarkerId(geoLocation));
       }
+
+      const geoLocationList = [
+        // BU
+        {'lat': -27.599645, 'lon': -48.518818},
+        {'lat': -27.599770, 'lon': -48.519370},
+        // CCS
+        {'lat': -27.599370, 'lon': -48.518234},
+        // CSE
+        {'lat': -27.599484, 'lon': -48.518074},
+        {'lat': -27.599870, 'lon': -48.522223},
+      ];
+      
+
+      // Call random sense
+      setInterval(
+        ()=>{
+          let geoLocationIndex = Math.floor(Math.random() * 10)%5;
+          let emptyFlag        = Math.random() >= 0.5
+          
+          if(!emptyFlag)
+            sendSenseNotEmpty(geoLocationList[geoLocationIndex]);    
+          else
+            sendSenseEmpty(geoLocationList[geoLocationIndex]);    
+        },
+
+        3000)
+
+      // sendSenseNotEmpty({'lat': -27.599645, 'lon': -48.518818 });
+      // sendSenseEmpty({'lat': -27.599645, 'lon': -48.518818 });
 
     </script>
 
