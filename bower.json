@@ -1,0 +1,27 @@
+{
+  "name": "smartpark-api",
+  "description": "RESP API for SmartPark application",
+  "main": "src",
+  "license": "MIT",
+  "keywords": [
+    "feathers"
+  ],
+  "homepage": "https://github.com/danielmaragno/smartpark-app",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "feathers-client": "^2.4.0"
+  },
+  "authors": [
+    "Daniel Maragno",
+    "Ricardo Fritsche",
+    "Thales AZH"
+  ]
+}
