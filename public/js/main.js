@@ -1,5 +1,8 @@
 "use strict";
 
+// gMap have to be global
+var gMap;
+
 $(() => {
   
   // Setup Google Map
@@ -8,18 +11,19 @@ $(() => {
   // Temp just for tests 
   const GOOGLE_MAPS_API_KEY = "AIzaSyDI8FP3X9PwHVkNw-HrhfGGBBh1mGMWC4o";
   
-  var map;
+  
   var mapMarker;
   var markersArray = [];
 
   function initializeMap(){
-    let coordinates = new google.maps.LatLng(-27.599836, -48.5190327);
+    let coordinates = new google.maps.LatLng(-27.599360, -48.519192);
     let options = {
-      zoom: 16,
-      center: coordinates
+      zoom: 19,
+      center: coordinates,
+      mapTypeId: 'satellite'
     }
     
-    map = new google.maps.Map(document.getElementById("map"), options);
+    gMap = new google.maps.Map(document.getElementById("map"), options);
 
     fillFreeParks();
   
@@ -63,7 +67,7 @@ $(() => {
     let id = generateMapMarkerId(geoLocation);
     let mapMarker = new google.maps.Marker({
       id:id,
-      map: map,
+      map: gMap,
       draggable: true,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
