@@ -37,6 +37,7 @@ $(() => {
       "lon": event.latLng.lng()
     }
     console.log(geoLocation);
+    $("#newSpotModal").modal('show');
   });
 
   function fillFreeParks(){
