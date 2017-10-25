@@ -37,8 +37,42 @@ $(() => {
       "lon": event.latLng.lng()
     }
     console.log(geoLocation);
-    $("#newSpotModal").modal('show');
+
+    // handle modal
+    let modal = $("#newSpotModal");
+    modal.find("input[name='id']").val("");
+    modal.find("input[name='lat']").val(geoLocation.lat);
+    modal.find("input[name='lon']").val(geoLocation.lon);
+    modal.modal('show');
   });
+
+
+
+  // handle Adicionar Vaga
+  $("#newSpotModal button[name='adicionarVaga']").click(()=>{
+      // find modal
+      let modal = $("#newSpotModal");
+
+      // get form values
+      let id = modal.find("input[name='id']").val();
+      let geoLocation = {
+        "lat": modal.find("input[name='lat']").val(),
+        "lon": modal.find("input[name='lon']").val()
+      };
+
+      // 
+      let s = {
+        "_id": id,
+        "geoLocation": geoLocation
+      };
+
+      sense.create(s);
+
+      // hide modal
+      modal.modal('hide');
+    
+    });
+  
 
   function fillFreeParks(){
     $.get('/sense', function(data){
@@ -86,11 +120,10 @@ $(() => {
 
   function createMapMarker(s){
     let geoLocation = s.geoLocation;
-    let empty = s.empty;
-
+    
     let coordinates = new google.maps.LatLng(geoLocation.lat, geoLocation.lon);
     let icon = baseIcon;
-    icon.strokeColor = empty ? "green" : "red";
+    icon.strokeColor = "yellow";
     let id = generateMapMarkerId(geoLocation);
     
     let mapMarker = new google.maps.Marker({
@@ -135,29 +168,23 @@ $(() => {
     });
   }
 
-  const geoLocationList = [
-    // BU
-    {'lat': -27.599645, 'lon': -48.518818},
-    {'lat': -27.599770, 'lon': -48.519370},
-    // CCS
-    {'lat': -27.599370, 'lon': -48.518234},
-    // CSE
-    {'lat': -27.599484, 'lon': -48.518074},
-    {'lat': -27.599870, 'lon': -48.522223},
-  ];
+  const ID_LIST = [
+    "BU1",
+    "BU2"
+  ]
   
 
   // Call random sense
   let t =setInterval(
     ()=>{
-      let geoLocationIndex = Math.floor(Math.random() * 10)%5;
+      let idIndex = Math.floor(Math.random() * 10)%2;
       let emptyFlag        = Math.random() >= 0.5
       
-      updateSpotAvailability(generateMapMarkerId({"lat":-27.59937,"lon":-48.518234}), emptyFlag);
+      updateSpotAvailability(ID_LIST[idIndex], emptyFlag);
     },
 
     3000);
   
-  clearInterval(t);
+  
 
 });
