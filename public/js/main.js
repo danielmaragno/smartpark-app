@@ -29,10 +29,20 @@ $(() => {
   
   };
 
+
+  // handle gMap click
+  gMap.addListener('click', function(event){
+    let geoLocation = {
+      "lat": event.latLng.lat(),
+      "lon": event.latLng.lng()
+    }
+    console.log(geoLocation);
+  });
+
   function fillFreeParks(){
     $.get('/sense', function(data){
       for(var i in data.data){
-        createMapMarker(data.data[i].geoLocation);
+        createMapMarker(data.data[i]);
       }
 
     });
@@ -51,7 +61,13 @@ $(() => {
   // On CREATE
   sense.on('created', function(s){
     console.log("Sense: ", s)
-    createMapMarker(s.geoLocation);
+    createMapMarker(s);
+  });
+
+  // On UPDATE
+  sense.on('updated', function(s){
+    console.log("Updated: ", s);
+    updateMapMarker(s);
   });
 
   // On REMOVE
@@ -61,30 +77,47 @@ $(() => {
   });
 
 
+  let baseIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    strokeColor: '',
+    scale: 3
+  }
 
-  function createMapMarker(geoLocation){
+  function createMapMarker(s){
+    let geoLocation = s.geoLocation;
+    let empty = s.empty;
+
     let coordinates = new google.maps.LatLng(geoLocation.lat, geoLocation.lon);
+    let icon = baseIcon;
+    icon.strokeColor = empty ? "green" : "red";
     let id = generateMapMarkerId(geoLocation);
+    
     let mapMarker = new google.maps.Marker({
       id:id,
       map: gMap,
       draggable: true,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        strokeColor: "green",
-        scale: 3
-      },
+      icon: icon,
     });
     mapMarker.setPosition(coordinates);
     markersArray.push(mapMarker);
 
   };
 
+  function updateMapMarker(s) {
+    let id = generateMapMarkerId(s.geoLocation);
+    for(let i=0, marker; marker=markersArray[i]; i++)
+      if(marker.id == id){
+        let icon = baseIcon;
+        icon.strokeColor = s.empty ? "green" : "red";
+        marker.setIcon(icon);
+      }
+  }
+
   function removeMapMarker(geoLocation){
-      let id = generateMapMarkerId(geoLocation);
-      for(let i=0, marker; marker=markersArray[i]; i++)
-        if(marker.id == id)
-          marker.setMap(null);
+    let id = generateMapMarkerId(geoLocation);
+    for(let i=0, marker; marker=markersArray[i]; i++)
+      if(marker.id == id)
+        marker.setMap(null);
   }
 
   function generateMapMarkerId(geoLocation){
@@ -92,17 +125,13 @@ $(() => {
   }
 
 
-
-  // TEST FUNCTIONS
-  function sendSenseNotEmpty(geoLocation){
-    sense.create({
-      '_id': generateMapMarkerId(geoLocation),
-      'geoLocation': geoLocation
+  // Update 
+  function updateSpotAvailability(id, emptyFlag){
+    sense.update(id, {
+      '$set':{
+        'empty': emptyFlag
+      }
     });
-  }
-
-  function sendSenseEmpty(geoLocation){
-    sense.remove(generateMapMarkerId(geoLocation));
   }
 
   const geoLocationList = [
@@ -118,20 +147,16 @@ $(() => {
   
 
   // Call random sense
-  setInterval(
+  let t =setInterval(
     ()=>{
       let geoLocationIndex = Math.floor(Math.random() * 10)%5;
       let emptyFlag        = Math.random() >= 0.5
       
-      if(!emptyFlag)
-        sendSenseNotEmpty(geoLocationList[geoLocationIndex]);    
-      else
-        sendSenseEmpty(geoLocationList[geoLocationIndex]);    
+      updateSpotAvailability(generateMapMarkerId({"lat":-27.59937,"lon":-48.518234}), emptyFlag);
     },
 
-    3000)
-
-  // sendSenseNotEmpty({'lat': -27.599645, 'lon': -48.518818 });
-  // sendSenseEmpty({'lat': -27.599645, 'lon': -48.518818 });
+    3000);
+  
+  clearInterval(t);
 
 });
