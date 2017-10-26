@@ -121,9 +121,10 @@ $(() => {
   function createMapMarker(s){
     let geoLocation = s.geoLocation;
     
+    console.log(s._id, s.empty);
     let coordinates = new google.maps.LatLng(geoLocation.lat, geoLocation.lon);
     let icon = baseIcon;
-    icon.strokeColor = "yellow";
+    icon.strokeColor = !('empty' in s) ? "yellow" : s.empty ? "green" : "red";
     let id = generateMapMarkerId(geoLocation);
     
     let mapMarker = new google.maps.Marker({
@@ -134,7 +135,6 @@ $(() => {
     });
     mapMarker.setPosition(coordinates);
     markersArray.push(mapMarker);
-
   };
 
   function updateMapMarker(s) {
@@ -170,14 +170,19 @@ $(() => {
 
   const ID_LIST = [
     "BU1",
-    "BU2"
+    "BU2",
+    "CTC1",
+    "CTC2",
+    "CTC3",
+    "CCS1",
+    "CCS2"
   ]
   
 
   // Call random sense
   let t =setInterval(
     ()=>{
-      let idIndex = Math.floor(Math.random() * 10)%2;
+      let idIndex = Math.floor(Math.random() * 10)%ID_LIST.length;
       let emptyFlag        = Math.random() >= 0.5
       
       updateSpotAvailability(ID_LIST[idIndex], emptyFlag);
