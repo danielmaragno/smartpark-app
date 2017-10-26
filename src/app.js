@@ -48,3 +48,7 @@ app.use(handler());
 app.hooks(appHooks);
 
 module.exports = app;
+
+
+// Request sense from Lisha IoT
+require('../iot/request_sense.js')(app);

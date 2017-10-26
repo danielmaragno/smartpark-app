@@ -54,7 +54,9 @@ $(() => {
       let modal = $("#newSpotModal");
 
       // get form values
-      let id = modal.find("input[name='id']").val();
+      let x = modal.find("input[name='x']").val();
+      let y = modal.find("input[name='y']").val();
+      let z = modal.find("input[name='z']").val();
       let geoLocation = {
         "lat": modal.find("input[name='lat']").val(),
         "lon": modal.find("input[name='lon']").val()
@@ -62,8 +64,10 @@ $(() => {
 
       // 
       let s = {
-        "_id": id,
-        "geoLocation": geoLocation
+        "geoLocation": geoLocation,
+        "x": parseInt(x),
+        "y": parseInt(y),
+        "z": parseInt(z)
       };
 
       sense.create(s);
@@ -167,28 +171,18 @@ $(() => {
       }
     });
   }
-
-  const ID_LIST = [
-    "BU1",
-    "BU2",
-    "CTC1",
-    "CTC2",
-    "CTC3",
-    "CCS1",
-    "CCS2"
-  ]
   
 
   // Call random sense
-  let t =setInterval(
-    ()=>{
-      let idIndex = Math.floor(Math.random() * 10)%ID_LIST.length;
-      let emptyFlag        = Math.random() >= 0.5
+  // let t =setInterval(
+  //   ()=>{
+  //     let idIndex = Math.floor(Math.random() * 10)%ID_LIST.length;
+  //     let emptyFlag        = Math.random() >= 0.5
       
-      updateSpotAvailability(ID_LIST[idIndex], emptyFlag);
-    },
+  //     updateSpotAvailability(ID_LIST[idIndex], emptyFlag);
+  //   },
 
-    3000);
+  //   3000);
   
   
 
