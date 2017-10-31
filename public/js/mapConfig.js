@@ -73,7 +73,7 @@ function updateMapMarker(s) {
     for(let i=0, marker; marker=markersArray[i]; i++)
       if(marker.id == id){
         let icon = baseIcon;
-        icon.url = s.empty ? "park_icons/vaga_livre.png" : "park_icons/vaga_ocupada.png";
+        icon.url = !('empty' in s) ? "park_icons/vaga_com_problema.png" : s.empty ? "park_icons/vaga_livre.png" : "park_icons/vaga_ocupada.png";
         marker.setIcon(icon);
       }
 }

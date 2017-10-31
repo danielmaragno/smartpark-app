@@ -63,6 +63,6 @@ function mapController($scope){
 	    },
 
 	    3000);
-	  // clearInterval(t);
+	  clearInterval(t);
 
 };
