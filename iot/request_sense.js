@@ -11,7 +11,7 @@ module.exports = function(app){
 	clearInterval(t);
 
 
-	findSenses();
+	// findSenses();
 	function findSenses(){
 		sense.find().then(items => {
 			
@@ -39,18 +39,30 @@ module.exports = function(app){
 		payload.series.t1 = epoch;
 		console.log(payload);
 
-		console.log("Requesting...")
+		console.log("Request for",s.x,s.y,s.z)
 		request.post({
 			"url": "http://iot.lisha.ufsc.br/api/get.php",
-			"form": JSON.parse(JSON.stringify(payload))
+			"form": JSON.stringify(payload)
 		},
 		(err, httpResponse, body)=>{
-			console.log(err);
-			console.log(httpResponse.statusCode);
-			console.log(body);
+			if(httpResponse.statusCode == 200){
+				let data = JSON.parse(body);
+				
+				if(data.series.length)
+					updateSense(data.series[0]);
+
+			}
+			else{
+				console.log(err);
+				console.log(httpResponse.statusCode);
+			}
 		});
 
 	};
+
+	function updateSense(s_iot){
+		console.log(s_iot);
+	}
 	
 
 }
