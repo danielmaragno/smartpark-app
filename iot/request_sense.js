@@ -70,22 +70,34 @@ module.exports = function(app){
 	};
 
 	function updateSense(s_iot){
-		console.log(s_iot);
+		// console.log(s_iot);
 
 		let id 		= s_iot.x + "" + s_iot.y + "" + s_iot.z;
-		let empty 	= s_iot.value <= 10 ? true : false;
+		let data = {}
+
+		if(s_iot.value){
+			data = {
+				"$set": {
+					"empty": s_iot.value <= 10 ? true : false
+				}
+			} 
+		}
+		else{
+			data = {
+				"$unset" :{
+					"empty": true
+				}
+			}
+		}
+
+
+		// console.log(data);
 		
-		var data = {
-			"empty": empty,
-			"TESTE": "teste"
-		} 
-		console.log(data);
-		
-		sense.update(id, data, {query : {complete: false}}).then(handleSenseUpdate);
+		sense.update(id, data).then(handleSenseUpdate);
 	};
 
 	function handleSenseUpdate(data){
-		console.log(data);
+		console.log("[DADO ATUALIZADO]  id:", data._id, "| empty:", data.empty);
 	};
 	
 
