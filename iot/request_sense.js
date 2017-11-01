@@ -10,7 +10,7 @@ module.exports = function(app){
 	// Sense instance
 	var sense = app.service('sense');
 
-	let t = setInterval(findSenses, 3000);
+	let t = setInterval(findSenses, 2000);
 	// clearInterval(t);
 
 
@@ -38,8 +38,8 @@ module.exports = function(app){
 		payload.series.x = s.x;
 		payload.series.y = s.y;
 		payload.series.z = s.z;
-		payload.series.t0 = epoch - (1*60*1000000);
-		payload.series.t1 = epoch;
+		payload.series.t0 = epoch - (3*1000000); // last 3 seconds
+		payload.series.t1 = epoch + (2*1000000); // 2 seconds gap to future, fix unsync clock problem
 		// console.log(payload);
 
 		console.log("Request for",s.x,s.y,s.z)
@@ -57,8 +57,16 @@ module.exports = function(app){
 				// console.log(data);
 
 				let series = data.series;
-				if(series.length)
+				
+				// Sensor send data
+				if(series.length){
+					// console.log(series);
 					updateSense(series[series.length-1]);
+				}
+
+				// Sensor do not send any data, PROBLEM
+				else
+					updateSense({"x": s.x, "y": s.y, "z": s.z, "value": 0});
 
 			}
 			else{
@@ -76,11 +84,12 @@ module.exports = function(app){
 		let data = {}
 
 		if(s_iot.value){
+			let empty = parseInt(s_iot.value) <= 10 ? false : true;
 			data = {
 				"$set": {
-					"empty": s_iot.value <= 10 ? true : false
+					"empty": empty
 				}
-			} 
+			}
 		}
 		else{
 			data = {
