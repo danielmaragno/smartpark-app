@@ -10,14 +10,14 @@ module.exports = function(app){
 	// Sense instance
 	var sense = app.service('sense');
 
-	let t = setInterval(findSenses, 2000);
+	let t = setInterval(findSenses, 1000);
 	// clearInterval(t);
 
 
 	// findSenses();
 	function findSenses(){
 		sense.find().then(items => {
-			
+
 			let data = items.data;
 			if(data.length){
 
@@ -27,19 +27,19 @@ module.exports = function(app){
 
 			}
 
-		});	
+		});
 	};
 
 	function findIoTsense(s){
 		let payload = base_payload;
-		
+
 		let epoch = Date.now()*1000;
-		
+
 		payload.series.x = s.x;
 		payload.series.y = s.y;
 		payload.series.z = s.z;
 		payload.series.t0 = epoch - (3*1000000); // last 3 seconds
-		payload.series.t1 = epoch + (2*1000000); // 2 seconds gap to future, fix unsync clock problem
+		payload.series.t1 = epoch + (20*1000000); // 20 seconds gap to future, fix unsync clock problem
 		// console.log(payload);
 
 		console.log("Request for",s.x,s.y,s.z)
@@ -57,7 +57,7 @@ module.exports = function(app){
 				// console.log(data);
 
 				let series = data.series;
-				
+
 				// Sensor send data
 				if(series.length){
 					// console.log(series);
@@ -101,13 +101,13 @@ module.exports = function(app){
 
 
 		// console.log(data);
-		
+
 		sense.update(id, data).then(handleSenseUpdate);
 	};
 
 	function handleSenseUpdate(data){
 		console.log("[DADO ATUALIZADO]  id:", data._id, "| empty:", data.empty);
 	};
-	
+
 
 }
